@@ -5,28 +5,45 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client {
-    Socket socket;
-    private final String IP_ADRESS = "localhost";
-    private final int PORT = 5555;
-    BufferedReader in;
-    BufferedWriter out;
+    private DataInputStream in;
+    private DataOutputStream out;
 
-    public Client() throws IOException {
+    public Client() throws IOException, InterruptedException {
         connect();
     }
 
-    public void sentTest() throws IOException {
-        out.write("testOutFromClient");
-        out.flush();
+    public void sentMsg()  {
+        try {
+            out.writeUTF("testMsg from client");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCoordinates() throws IOException {
+        String line;
+        while ((line = in.readUTF()) != null){
+            System.out.println(line);
+        }
     }
 
     public void connect() throws IOException {
 
         try{
-            socket = new Socket(IP_ADRESS, PORT);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            String IP_ADRESS = "localhost";
+            int PORT = 29288;
+            Socket socket = new Socket(IP_ADRESS, PORT);
+            in = new DataInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
             System.out.println("Я подключился");
+            sentMsg();
+            String str = in.readUTF();
+            System.out.println(str);
+            getCoordinates();
+
+
+
+
 
 
         } catch (UnknownHostException e) {
