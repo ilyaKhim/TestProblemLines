@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 
@@ -31,9 +32,16 @@ public class SeparateFile {
         ArrayList<SeparateFile> files = new ArrayList<>();
         StringTokenizer token = new StringTokenizer(line,"\n");
         while (token.hasMoreElements()){
-            files.add(new SeparateFile(separateLine(token.nextToken())));
+            try {
+                files.add(new SeparateFile(separateLine(token.nextToken())));
+            } catch (IndexOutOfBoundsException e){ // проверка на случай, если строка не соответствует требованиям.
+                try{
+                    token.nextToken();
+                } catch (NoSuchElementException ex){ // в случае, если неправильная строка была последней
+                    return files;
+                }
+            }
         }
-        System.out.println(Arrays.toString(files.toArray()));
         return files;
     }
 
