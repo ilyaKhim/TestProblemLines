@@ -5,6 +5,7 @@ import Server.SeparateFile;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Client {
@@ -13,16 +14,18 @@ public class Client {
         connect();
     }
 
-    private SeparateFile catchObject(Socket socket){
+    private ArrayList<SeparateFile> catchObject(Socket socket){
         try{
-            SeparateFile file;
+            ArrayList<SeparateFile> files =  new ArrayList<>();
             DataInputStream in = new DataInputStream(socket.getInputStream());
             ObjectInputStream ois = new ObjectInputStream(in);
-            while (in.available()!=0){
-                file = (SeparateFile)ois.readObject();
-                System.out.println(file);
+            try {
+                while (true){
+                    files.add((SeparateFile)ois.readObject());
                 }
-            ois.close();
+            } catch (EOFException e){
+                return files;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,7 +42,7 @@ public class Client {
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             System.out.println("Я подключился");
-            catchObject(socket);
+            ArrayList<SeparateFile> files = catchObject(socket);
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
