@@ -9,14 +9,20 @@ import static Server.SeparateFile.separateFile;
 
 public class Server {
 
-    private DataInputStream in;
-    private DataOutputStream out;
+
     private String fileName = "C:\\Users\\1\\IdeaProjects\\TestProblemLines\\src\\main\\java\\Server\\Coordinates.txt";
 
-    public void sendObject(ArrayList<SeparateFile> files){
+    public void sendObject(ArrayList<SeparateFile> files, DataOutputStream out){
         {
-            try(ObjectOutputStream ous = new ObjectOutputStream(out);){
-                ous.writeObject(files.get(0));
+            try(ObjectOutputStream ous = new ObjectOutputStream(out)){
+                ArrayList<String> fields = new ArrayList<>();
+                fields.add("test1");
+                fields.add("test2");
+                fields.add("test3");
+                fields.add("test4");
+                fields.add("test5");
+                SeparateFile test = new SeparateFile(fields);
+                ous.writeObject(test);
                 System.out.println("File has been written");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -35,13 +41,10 @@ public class Server {
             // todo: клиент получает точки и рисует без участия человека
             while (true){
                 socket = server.accept();
-                in = new DataInputStream(socket.getInputStream());
-                out = new DataOutputStream(socket.getOutputStream());
+                DataInputStream in = new DataInputStream(socket.getInputStream());
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 System.out.println("Клиент подключился.");
-                catchMsg();
-                sendMsg();
-                sendCoordinates();
-                sendObject(files);
+                sendObject(files, out);
 
             }
         } catch (IOException e){
@@ -59,30 +62,5 @@ public class Server {
             }
         }
 
-    }
-    
-    
-    
-
-    private void sendMsg(){
-        try {
-            out.writeUTF("msg from server");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    private void sendCoordinates() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        String line;
-        while((line = reader.readLine()) != null){
-            out.writeUTF(line);
-        }
-    }
-
-    private void catchMsg() throws IOException {
-        System.out.println(in.readUTF());
     }
 }
