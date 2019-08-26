@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import static Server.SeparateFile.getFile;
+import static Server.SeparateFile.separateFile;
 
 public class Server {
 
@@ -12,12 +13,26 @@ public class Server {
     private DataOutputStream out;
     private String fileName = "C:\\Users\\1\\IdeaProjects\\TestProblemLines\\src\\main\\java\\Server\\Coordinates.txt";
 
+    public void sendObject(ArrayList<SeparateFile> files){
+        {
+            try(ObjectOutputStream ous = new ObjectOutputStream(out);){
+                ous.writeObject(files.get(0));
+                System.out.println("File has been written");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Server()  {
         ServerSocket server = null;
         Socket socket = null;
         try{
             server = new ServerSocket(29288);
             System.out.println("Сервер запущен");
+            ArrayList<SeparateFile> files = separateFile(getFile(fileName));
+            // TODO: 25.08.2019 Необходимо организовать отправку сообщений клиенту при его подключении.
+            // todo: клиент получает точки и рисует без участия человека
             while (true){
                 socket = server.accept();
                 in = new DataInputStream(socket.getInputStream());
@@ -26,6 +41,7 @@ public class Server {
                 catchMsg();
                 sendMsg();
                 sendCoordinates();
+                sendObject(files);
 
             }
         } catch (IOException e){
@@ -44,6 +60,9 @@ public class Server {
         }
 
     }
+    
+    
+    
 
     private void sendMsg(){
         try {
@@ -59,7 +78,6 @@ public class Server {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         String line;
         while((line = reader.readLine()) != null){
-
             out.writeUTF(line);
         }
     }

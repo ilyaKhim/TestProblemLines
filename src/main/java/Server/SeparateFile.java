@@ -1,4 +1,4 @@
-package Client;
+package Server;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -6,12 +6,11 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 
-public class SeparateFile {
+public class SeparateFile implements Serializable{
     private static final String fileName = "C:\\Users\\1\\IdeaProjects\\TestProblemLines\\src\\main\\java\\Server\\Coordinates.txt";
     private String idEquality;
     private String command;
@@ -28,7 +27,18 @@ public class SeparateFile {
         this.color = arr.get(4);
     }
 
-    private static ArrayList<SeparateFile> separateFile(String line){
+    @Override
+    public String toString() {
+        return "SeparateFile{" +
+                "idEquality='" + idEquality + '\'' +
+                ", command='" + command + '\'' +
+                ", x='" + x + '\'' +
+                ", y='" + y + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
+
+    public static ArrayList<SeparateFile> separateFile(String line){
         ArrayList<SeparateFile> files = new ArrayList<>();
         StringTokenizer token = new StringTokenizer(line,"\n");
         while (token.hasMoreElements()){
@@ -84,7 +94,7 @@ public class SeparateFile {
     }
 
 
-    private static String getFile(String fileName) throws IOException {
+    public static String getFile(String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         String line;
         StringBuilder str = new StringBuilder();
@@ -96,13 +106,4 @@ public class SeparateFile {
     }
 
 
-    public static void main(String[] args) throws IOException {
-
-        ArrayList<SeparateFile> files = separateFile(getFile(fileName));
-        System.out.println(files.get(25).x);
-        System.out.println(files.get(25).y);
-        System.out.println(files.get(25).color);
-        System.out.println(files.get(25).command);
-        System.out.println(files.get(25).idEquality);
-    }
 }
