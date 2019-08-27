@@ -1,65 +1,77 @@
 package Client;
 
 import Server.SeparateFile;
-import java.io.*;
+
+import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 class Client {
 
-    private ArrayList<SeparateFile>objects;
+    private List<SeparateFile> objects = new ArrayList<>();
 
-    Client(){
+    public Client() {
         connect();
     }
 
-    ArrayList<SeparateFile> getObjects() {
+    List<SeparateFile> getObjects() {
         return objects;
     }
 
-    private void setObjects(ArrayList<SeparateFile> files) {
-        this.objects = files;
-    }
 
-    private ArrayList<SeparateFile> catchObject(Socket socket){
-        try{
-            ArrayList<SeparateFile> files =  new ArrayList<>();
+    private void catchObject(Socket socket, JFrame component) {
+        try {
             DataInputStream in = new DataInputStream(socket.getInputStream());
             ObjectInputStream ois = new ObjectInputStream(in);
             try {
-                while (true){
-                    files.add((SeparateFile)ois.readObject());
+                while (true) {
+                    SeparateFile file = (SeparateFile) ois.readObject();
+                    objects.add(file);
+                    SwingUtilities.updateComponentTreeUI(component);
+
                 }
-            } catch (EOFException e){ // значит файл закончился, нужно его "выплюнуть"
-                return files;
+            } catch (EOFException e) { // значит файл закончился, нужно его "выплюнуть"
+                System.out.println("Конец передачи.");
             }
 
         } catch (IOException e) {
             System.out.println("Ошибка потока ввода.");
-        } catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             System.out.println("Ошибка поиска класса. Такого класса не существует.");
         }
-        return null;
     }
 
-    private void connect(){
+    private void connect() {
 
-        try{
+        try {
             String IP_ADRESS = "localhost";
             int PORT = 29288;
-            Socket socket = new Socket(IP_ADRESS, PORT);
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            final Socket socket = new Socket(IP_ADRESS, PORT);
 
             System.out.println("Я подключился");
-            setObjects(catchObject(socket)); // список объектов со всеми полями, которые мы получили от сервера мы привязываем
-            // к конкретному объетку, чтобы достать из объекта точки
-            new LinesComponent(this);
+            final LinesComponent linesComponent = new LinesComponent(this);
+            linesComponent.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+            Runnable runnable =
+                    new Runnable() {
+                        public void run() {
+                            System.out.println("Runnable running");
+                            catchObject(socket, linesComponent);
+                        }
+                    };
+            Thread thread = new Thread(runnable);
+            thread.start();
+
 
         } catch (UnknownHostException e) {
             System.out.println("Ошибка поиска хостинга");
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Ошибка потока вывода.");
         }
     }

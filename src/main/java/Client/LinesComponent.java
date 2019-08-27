@@ -1,16 +1,15 @@
 
 package Client;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import javax.swing.*;
 
 
 public class LinesComponent extends JFrame{
     private Client client;
-    LinesComponent(Client client) {
+    public LinesComponent(Client client) {
         super("Lines Drawing Demo");
         this.client = client;
         setSize(1000, 900);
@@ -36,13 +35,9 @@ public class LinesComponent extends JFrame{
 
 
     private void drawLines(Graphics g) throws InterruptedException {
-
         Graphics2D g2d = (Graphics2D) g;
-        Thread.sleep(500);
         for(Line2D line: makeAllLines()){
             g2d.draw(line);
-
-            Thread.sleep(200);
         }
     }
 

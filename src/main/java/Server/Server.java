@@ -1,15 +1,19 @@
 package Server;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
 import static Server.SeparateFile.getFile;
 import static Server.SeparateFile.separateFile;
 
 class Server {
 
 
+    private static final int STEP_IN_MILLISECONDS = 200;
 
     Server(String fileName)  {
         ServerSocket server = null;
@@ -32,7 +36,7 @@ class Server {
                     socket.close();
                 }
             } catch (IOException e){
-                System.out.println("Ошибка закрытия сокета.");;
+                System.out.println("Ошибка закрытия сокета.");
             }
             try{
                 if (server != null) {
@@ -51,11 +55,12 @@ class Server {
                 for(SeparateFile file: files){
                     if( file.getColorEquality()) // при несовпадении мак-адресов объект не будет передан и ничего не нарисуется
                     {
+                        Thread.sleep(STEP_IN_MILLISECONDS);
                         ous.writeObject(file);
                     }
                 }
                 System.out.println("Files has been written");
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 System.out.println("Ошибка потока вывода.");
             }
         }
