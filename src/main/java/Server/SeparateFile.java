@@ -11,12 +11,11 @@ import java.util.StringTokenizer;
 
 
 public class SeparateFile implements Serializable{
-    private static final String fileName = "C:\\Users\\1\\IdeaProjects\\TestProblemLines\\src\\main\\java\\Server\\Coordinates.txt";
-    private String idEquality;
+    private boolean idEquality;
     private String command;
-    private String x;
-    private String y;
-    private String color;
+    private double x;
+    private double y;
+    private boolean colorEquality;
 
 
     public String getCommand() {
@@ -24,34 +23,28 @@ public class SeparateFile implements Serializable{
     }
 
     public Double getX() {
-        return Double.parseDouble(x);
+        return x;
     }
 
     public double getY() {
-        return Double.parseDouble(y);
+        return y;
     }
 
-    public String getColor() {
-        return color;
+    public boolean getColorEquality() {
+        return colorEquality;
     }
 
     public SeparateFile(ArrayList<String> arr){
-        this.idEquality = String.valueOf(checkMac(arr.get(0)));
+        this.idEquality = checkMac(arr.get(0));
         this.command = arr.get(1);
-        this.x = arr.get(2);
-        this.y = arr.get(3);
-        this.color = arr.get(4);
+        this.x = Double.parseDouble(arr.get(2));
+        this.y = Double.parseDouble(arr.get(3));
+        this.colorEquality = checkForColor(arr.get(4));
     }
 
-    @Override
-    public String toString() {
-        return "SeparateFile{" +
-                "idEquality='" + idEquality + '\'' +
-                ", command='" + command + '\'' +
-                ", x='" + x + '\'' +
-                ", y='" + y + '\'' +
-                ", color='" + color + '\'' +
-                '}';
+
+    public boolean checkForColor(String color){
+        return Long.parseLong(color)==-16777216L;
     }
 
     public static ArrayList<SeparateFile> separateFile(String line){

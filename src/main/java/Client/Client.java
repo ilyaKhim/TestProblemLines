@@ -1,40 +1,28 @@
 package Client;
 
 import Server.SeparateFile;
-
-import javax.swing.*;
-import java.awt.geom.Line2D;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
-public class Client {
+class Client {
 
     private ArrayList<SeparateFile>objects;
 
-    public ArrayList<SeparateFile> getObjects() {
+    Client(){
+        connect();
+    }
+
+    ArrayList<SeparateFile> getObjects() {
         return objects;
     }
 
-
-    public void setObjects(ArrayList<SeparateFile> files) {
+    private void setObjects(ArrayList<SeparateFile> files) {
         this.objects = files;
     }
 
-    public Client() throws IOException{
-        connect();
-
-
-    }
-
-
-
-
-
-    public ArrayList<SeparateFile> catchObject(Socket socket){
+    private ArrayList<SeparateFile> catchObject(Socket socket){
         try{
             ArrayList<SeparateFile> files =  new ArrayList<>();
             DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -43,18 +31,19 @@ public class Client {
                 while (true){
                     files.add((SeparateFile)ois.readObject());
                 }
-            } catch (EOFException e){
-
+            } catch (EOFException e){ // значит файл закончился, нужно его "выплюнуть"
                 return files;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Ошибка потока ввода.");
+        } catch (ClassNotFoundException e){
+            System.out.println("Ошибка поиска класса. Такого класса не существует.");
         }
         return null;
     }
 
-    public void connect(){
+    private void connect(){
 
         try{
             String IP_ADRESS = "localhost";
@@ -67,12 +56,10 @@ public class Client {
             // к конкретному объетку, чтобы достать из объекта точки
             new LinesComponent(this);
 
-
-
         } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Ошибка поиска хостинга");
+        } catch (IOException e){
+            System.out.println("Ошибка потока вывода.");
         }
     }
 }
