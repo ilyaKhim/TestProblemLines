@@ -57,9 +57,11 @@ public class Client extends JFrame {
             Socket socket = new Socket(IP_ADRESS, PORT);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            new LinesComponent();
             System.out.println("Я подключился");
             ArrayList<SeparateFile> files = catchObject(socket);
             makeAllLines(files);
+
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
