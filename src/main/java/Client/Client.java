@@ -11,21 +11,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Client extends JFrame {
+public class Client {
+
+    private ArrayList<SeparateFile>objects;
+
+    public ArrayList<SeparateFile> getObjects() {
+        return objects;
+    }
+
+
+    public void setObjects(ArrayList<SeparateFile> files) {
+        this.objects = files;
+    }
 
     public Client() throws IOException{
-
         connect();
 
+
     }
 
-    public static ArrayList<Line2D> makeAllLines(ArrayList<SeparateFile>files){
-        ArrayList<Line2D> arrayList = new ArrayList<>();
-        for (int i = 0; i<files.size()-1; i++){
-            arrayList.add(new Line2D.Double(files.get(i).getX(), files.get(i).getY(), files.get(i+1).getX(), files.get(i+1).getY()));
-        }
-        return arrayList;
-    }
+
 
 
 
@@ -57,10 +62,11 @@ public class Client extends JFrame {
             Socket socket = new Socket(IP_ADRESS, PORT);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            new LinesComponent();
             System.out.println("Я подключился");
-            ArrayList<SeparateFile> files = catchObject(socket);
-            makeAllLines(files);
+            setObjects(catchObject(socket)); // список объектов со всеми полями, которые мы получили от сервера мы привязываем
+            // к конкретному объетку, чтобы достать из объекта точки
+            new LinesComponent(this);
+
 
 
         } catch (UnknownHostException e) {
