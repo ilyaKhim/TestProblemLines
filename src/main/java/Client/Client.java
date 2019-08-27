@@ -51,6 +51,7 @@ class Client {
             Socket socket = new Socket(IP_ADRESS, PORT);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
             System.out.println("Я подключился");
             setObjects(catchObject(socket)); // список объектов со всеми полями, которые мы получили от сервера мы привязываем
             // к конкретному объетку, чтобы достать из объекта точки

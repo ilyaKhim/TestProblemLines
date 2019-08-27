@@ -3,31 +3,19 @@ package Client;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import javax.swing.*;
 
 
-public class LinesComponent extends JFrame {
+public class LinesComponent extends JFrame{
     private Client client;
     LinesComponent(Client client) {
         super("Lines Drawing Demo");
         this.client = client;
         setSize(1000, 900);
         setLocationRelativeTo(null);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                System.exit(0);
-            }
-        });
         setVisible(true);
-
-
-
 
     }
 
@@ -41,6 +29,7 @@ public class LinesComponent extends JFrame {
             }
 
         }
+
         return arrayList;
     }
 
