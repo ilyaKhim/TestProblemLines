@@ -19,6 +19,22 @@ public class SeparateFile implements Serializable{
     private String color;
 
 
+    public String getCommand() {
+        return command;
+    }
+
+    public Double getX() {
+        return Double.parseDouble(x);
+    }
+
+    public double getY() {
+        return Double.parseDouble(y);
+    }
+
+    public String getColor() {
+        return color;
+    }
+
     public SeparateFile(ArrayList<String> arr){
         this.idEquality = String.valueOf(checkMac(arr.get(0)));
         this.command = arr.get(1);
